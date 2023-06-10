@@ -4,14 +4,15 @@ import Models.Vehicle;
 import commons.RandomCharGenerator;
 import enums.VehicleTypeEnum;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class VehiclesRepository {
 
-    public List<Vehicle> vehicles;
+    public List<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-    VehiclesRepository() {
+    public VehiclesRepository() {
         Integer[] totalVehicles = new Integer[15];
         Arrays.setAll(totalVehicles, i -> i + 1);
         for(int i: totalVehicles) {

@@ -28,6 +28,7 @@ public class TicketService {
         this.vehicleService = vehicleService;
         this.slotAssigningStrategy = slotAssigningStrategy;
         this.parkingLotRepository = parkingLotRepository;
+        this.ticketRepository = ticketRepository;
     }
     public Ticket generateTicket(String vehicleNumber, VehicleTypeEnum vehicleType, UUID gateId) {
         Ticket ticket = new Ticket();

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SlotAssigningStrategy implements SlotAssigning {
     ParkingLotRepository parkingLotRepository;
-    SlotAssigningStrategy(ParkingLotRepository parkingLotRepository) {
+    public SlotAssigningStrategy(ParkingLotRepository parkingLotRepository) {
         this.parkingLotRepository = parkingLotRepository;
     }
 

@@ -7,7 +7,7 @@ import Services.TicketService;
 public class TicketController {
     TicketService ticketService;
 
-    TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
     public Ticket generateTicket(GenerateTicketRequestDto requestDto) {

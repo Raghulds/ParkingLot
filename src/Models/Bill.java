@@ -7,6 +7,7 @@ public class Bill extends BaseModel {
     public Integer paidAmount;
     public PaymentModeEnum paymentMode;
 
+    public Bill() {}
     public Bill(Bill bill) {
         this.paidAmount = bill.paidAmount;
         this.transactionId = bill.transactionId;

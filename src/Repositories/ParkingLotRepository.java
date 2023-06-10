@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class ParkingLotRepository {
     public ParkingLot lot = new ParkingLot();
-    public List<ParkingFloor> floors;
+    public List<ParkingFloor> floors = new ArrayList<ParkingFloor>();
     public ParkingLotRepository() {
 
         lot.setCity("Bangalore");
@@ -25,10 +25,12 @@ public class ParkingLotRepository {
         // Entry gate
         Gate gate = new Gate();
         gate.setType(GateTypeEnum.ENTRY);
+        gate.setNumber(1);
         gates.add(gate);
         // Exit gate
         Gate gate2 = new Gate();
         gate2.setType(GateTypeEnum.EXIT);
+        gate.setNumber(1);
         gates.add(gate2);
         lot.setGates(gates);
         // Default: 5 floors - 0 Vehicles
@@ -39,6 +41,7 @@ public class ParkingLotRepository {
         Arrays.setAll(defaultSlots, i -> i + 1);
         for(int floor: defaultFloors) {
             ParkingFloor parkingFloor = new ParkingFloor();
+            List<ParkingSlot> allSlots = new ArrayList<ParkingSlot>();
             parkingFloor.setNumber(floor);
             parkingFloor.setStatus(FloorStatusEnum.ACTIVE);
             for(int slot: defaultSlots) {
@@ -50,7 +53,9 @@ public class ParkingLotRepository {
                 } else {
                     parkingSlot.setVehicleStorageType(VehicleTypeEnum.LIGHT_FOUR_WHEELER);
                 }
+                allSlots.add(parkingSlot);
             }
+            parkingFloor.setSlots(allSlots);
             floors.add(parkingFloor);
         }
         lot.setFloors(floors);
@@ -60,6 +65,16 @@ public class ParkingLotRepository {
         List<Gate> gates = lot.getGates();
         for (Gate gate:gates) {
             if(gate.getUuid().equals(gateId)) {
+                return gate;
+            }
+        }
+        return null;
+    }
+
+    public Gate getGateByNumber(Integer number) {
+        List<Gate> gates = lot.getGates();
+        for (Gate gate:gates) {
+            if(gate.getNumber() != null && gate.getNumber().equals(number)) {
                 return gate;
             }
         }
