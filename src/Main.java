@@ -1,17 +1,22 @@
+import Controllers.BillController;
 import Controllers.TicketController;
 import Dto.GenerateTicketRequestDto;
 import Models.Bill;
 import Models.Gate;
 import Models.Ticket;
+import Models.Transaction;
 import Repositories.ParkingLotRepository;
 import Repositories.TicketRepository;
 import Repositories.VehiclesRepository;
+import Services.BillService;
 import Services.TicketService;
 import Services.VehicleService;
 import Strategies.SlotAssigningStrategy;
+import enums.PaymentModeEnum;
 import enums.VehicleTypeEnum;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,6 +32,7 @@ public class Main {
                 lot,
                 ticketRepository
         );
+        BillService billService = new BillService();
 
         Scanner inStream = new Scanner(System.in);
         actionPrompt();
@@ -37,10 +43,22 @@ public class Main {
                 System.out.println("Ticket generated: " + generatedTicket.getUuid());
                 System.out.println("Safe parking :)");
             } else if(actionNumber == 2) {
-                Bill generatedBill = payBill();
-                System.out.println("Bill with " + generatedBill.transactionId + " was paid!");
+                paymentModePrompt();
+                Integer modeNumber = inStream.nextInt();
+                while(modeNumber != 1 && modeNumber != 2) {
+                    paymentModePrompt();
+                }
+                PaymentModeEnum paymentMode;
+                if(modeNumber == 1) {
+                    paymentMode = PaymentModeEnum.ONLINE;
+                } else {
+                    paymentMode = PaymentModeEnum.CASH;
+                }
+                Bill generatedBill = generateBill(inStream, billService, ticketRepository, paymentMode, UUID.fromString("werty"));
+                System.out.println("Bill was generated! Amount to be paid: " + generatedBill.getAmount());
+            } else if(actionNumber == 3) {
                 System.out.println("Always welcome :)");
-            } else if(actionNumber == 3) break;
+            } else if(actionNumber == 4) break;
             actionPrompt();
             actionNumber = inStream.nextInt();
         }
@@ -49,8 +67,17 @@ public class Main {
     private static void actionPrompt() {
         System.out.println("Enter the action number: ");
         System.out.println("[1] Generate ticket");
-        System.out.println("[2] Pay bill");
-        System.out.println("[3] Exit app");
+        System.out.println("[2] Generate bill");
+        System.out.println("[3] Pay bill");
+        System.out.println("[4] Exit app");
+        System.out.println("---------------------------------");
+    }
+
+    private static void paymentModePrompt() {
+        System.out.println("Enter the payment mode: ");
+        System.out.println("[1] Online");
+        System.out.println("[2] Cash");
+        System.out.println("[3] Cancel");
         System.out.println("---------------------------------");
     }
 
@@ -87,11 +114,21 @@ public class Main {
         return controller.generateTicket(requestObject);
     }
 
-    private static Bill payBill() {
+    private static Bill generateBill(Scanner inStream, BillService billService, TicketRepository ticketRepository, PaymentModeEnum paymentMode, UUID operatorId) throws RuntimeException {
         System.out.println("Enter the ticket ID");
+        String ticketIdString = inStream.next();
         // Check if ticket is valid
-        // get payment mode
-        // generate bill after payment successful
-        return new Bill();
+        Ticket ticket = ticketRepository.getTicketById(UUID.fromString(ticketIdString));
+        if(ticket == null) {
+            throw new RuntimeException("Ticket was not found! Enter a valid ticket number");
+        }
+        // generate bill
+        BillController billController = new BillController(billService);
+        Bill bill = billController.generateBill(ticket, paymentMode, operatorId);
+        return bill;
+    }
+
+    private static Transaction payBill(Scanner inStream, BillService billService, Bill bill) {
+        return null;
     }
 }

@@ -14,7 +14,7 @@ public class TicketRepository {
         return ticket;
     }
 
-    public Ticket get(UUID uuid) {
+    public Ticket getTicketById(UUID uuid) {
         if(!tickets.containsKey(uuid)) {
             throw new RuntimeException("Ticket with UUID " + uuid + " was not found");
         }
